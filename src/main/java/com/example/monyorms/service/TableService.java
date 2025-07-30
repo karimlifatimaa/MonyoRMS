@@ -4,6 +4,7 @@ import com.example.monyorms.DTOs.table.TableRequestDto;
 import com.example.monyorms.DTOs.table.TableResponseDto;
 import com.example.monyorms.entity.DiningTable;
 import com.example.monyorms.entity.Restaurant;
+import com.example.monyorms.exception.TableNotFoundException;
 import com.example.monyorms.mapper.TableMapper;
 import com.example.monyorms.repository.RestaurantRepository;
 import com.example.monyorms.repository.TableRepository;
@@ -52,6 +53,7 @@ public class TableService {
     public List<TableResponseDto> getAllTablesByRestaurantId(Long restaurantId) {
         List<DiningTable> diningTables = tableRepository.findAllByRestaurantId(restaurantId);
         return diningTables.stream()
+                .filter(table -> !table.isOccupied()) // yalnız boş masalar
                 .map(tableMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
@@ -65,13 +67,13 @@ public class TableService {
 
     public TableResponseDto getTableById(Long id) {
         DiningTable diningTable = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Masa tapılmadı"));
+                .orElseThrow(() -> new TableNotFoundException("Masa tapılmadı"));
         return tableMapper.toResponseDto(diningTable);
     }
 
     public TableResponseDto updateTable(Long id, TableRequestDto dto) {
         DiningTable diningTable = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Masa tapılmadı"));
+                .orElseThrow(() -> new TableNotFoundException("Masa tapılmadı"));
 
         diningTable.setCode(dto.getCode());
         diningTable.setOccupied(dto.isOccupied());
@@ -81,7 +83,7 @@ public class TableService {
     }
     public void deleteTable(Long id) {
         if (!tableRepository.existsById(id)) {
-            throw new RuntimeException("Masa tapılmadı");
+            throw new TableNotFoundException("Masa tapılmadı");
         }
         tableRepository.deleteById(id);
     }

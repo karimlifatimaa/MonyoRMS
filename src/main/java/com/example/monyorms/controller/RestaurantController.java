@@ -11,6 +11,7 @@ import com.example.monyorms.service.RestaurantService;
 import com.example.monyorms.service.TableService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class RestaurantController {
 
     // === RESTAURANT CRUD ===
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<RestaurantResponseDto> create(@RequestBody @Valid RestaurantRequestDto dto) {
         return ResponseEntity.ok(restaurantService.createRestaurant(dto));
@@ -48,12 +50,14 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.getRestaurantById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantResponseDto> update(@PathVariable Long id,
                                                         @RequestBody @Valid RestaurantRequestDto dto) {
         return ResponseEntity.ok(restaurantService.updateRestaurant(id, dto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         restaurantService.delete(id);
@@ -62,6 +66,7 @@ public class RestaurantController {
 
     // === TABLE ƏMƏLİYYATLARI ===
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{restaurantId}/tables")
     public ResponseEntity<TableResponseDto> addTable(@PathVariable Long restaurantId,
                                                      @RequestBody @Valid TableRequestDto dto) {
@@ -83,12 +88,14 @@ public class RestaurantController {
         return ResponseEntity.ok(tableService.getTableById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/tables/{id}")
     public ResponseEntity<TableResponseDto> updateTable(@PathVariable Long id,
                                                         @RequestBody @Valid TableRequestDto dto) {
         return ResponseEntity.ok(tableService.updateTable(id, dto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/tables/{id}")
     public ResponseEntity<Void> deleteTable(@PathVariable Long id) {
         tableService.deleteTable(id);
@@ -97,6 +104,7 @@ public class RestaurantController {
 
     // === MENYU ƏMƏLİYYATLARI ===
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{restaurantId}/menus")
     public ResponseEntity<MenyuResponseDto> addMenu(@PathVariable Long restaurantId,
                                                     @RequestBody @Valid MenyuRequestDto dto) {
@@ -118,12 +126,14 @@ public class RestaurantController {
         return ResponseEntity.ok(menyuService.getMenuById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/menus/{id}")
     public ResponseEntity<MenyuResponseDto> updateMenu(@PathVariable Long id,
                                                        @RequestBody @Valid MenyuRequestDto dto) {
         return ResponseEntity.ok(menyuService.updateMenu(id, dto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/menus/{id}")
     public ResponseEntity<Void> deleteMenu(@PathVariable Long id) {
         menyuService.deleteMenu(id);

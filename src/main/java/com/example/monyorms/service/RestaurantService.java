@@ -3,6 +3,7 @@ package com.example.monyorms.service;
 import com.example.monyorms.DTOs.restaurant.RestaurantRequestDto;
 import com.example.monyorms.DTOs.restaurant.RestaurantResponseDto;
 import com.example.monyorms.entity.Restaurant;
+import com.example.monyorms.exception.RestourantNotFoundException;
 import com.example.monyorms.mapper.RestaurantMapper;
 import com.example.monyorms.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
@@ -35,13 +36,13 @@ public class RestaurantService {
 
     public RestaurantResponseDto getRestaurantById(Long restaurantId) {
         Restaurant restaurant = restaurantRepository
-                .findById(restaurantId).orElseThrow(() -> new RuntimeException("Restaurant not found"));
+                .findById(restaurantId).orElseThrow(() -> new RestourantNotFoundException("Restaurant not found"));
         return restaurantMapper.toResponseDto(restaurant);
     }
 
     public RestaurantResponseDto updateRestaurant(Long id,RestaurantRequestDto restaurantRequestDto) {
         Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+                .orElseThrow(() -> new RestourantNotFoundException("Restaurant not found"));
 
         restaurant.setName(restaurantRequestDto.getName());
         restaurant.setAddress(restaurantRequestDto.getAddress());
@@ -52,7 +53,7 @@ public class RestaurantService {
 
     public void delete(Long id) {
         if (!restaurantRepository.existsById(id)) {
-            throw new RuntimeException("Restaurant not found");
+            throw new RestourantNotFoundException("Restaurant not found");
         }
         restaurantRepository.deleteById(id);
     }

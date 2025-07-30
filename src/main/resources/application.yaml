@@ -29,3 +29,8 @@ springdoc:
     operationsSorter: method
     tagsSorter: alpha
     display-request-duration: true
+auth-service:
+  url: http://localhost:9090
+logging:
+  level:
+    com.example.monyorms.filter: DEBUG
